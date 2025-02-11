@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ... (Your CSS styles remain the same) ... */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        /* Login Page Styling */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h2 {
+            margin-bottom: 20px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        /* Employee Page Styling */
+        #employeePage {
+            display: none;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #2980b9;
+            color: #fff;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        aside {
+            width: 20%;
+            background-color: white;
+            color: #ecf0f1;
+            padding: 20px;
+            border-right: 2px solid black;
+        }
+
+        aside nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        aside nav ul li {
+            margin-bottom: 15px;
+        }
+
+        aside nav ul li button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            color: black;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        aside nav ul li button:hover {
+            background-color: #2980b9;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            background-color: #d6d6d66b;
+            margin-top: 20px;
+        }
+
+        .employee-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #bdc3c7;
+        }
+
+        .check-buttons button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .check-in {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .check-out {
+            background-color: #3498db;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #969797;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #progressReportInput {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            color: #333;
+        }
+
+        #progressReportInput::placeholder {
+            color: #999;
+        }
+
+        #progressReportInput:hover {
+            background: none;
+        }
+
+        /* Admin Page Styling */
+        #adminPage {
+            display: none;
+        }
+
+        .navbar {
+            background-color: #2980b9;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .select-employee-btn {
+            background-color: white;
+            color: #2980b9;
+            border: 1px solid #4CAF50;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: button;
+        }
+
+        .select-employee-btn:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            background-color: white;
+            width: 20%;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e2e2e2;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background-color: #2980b9;
+        }
+
+        .content {
+            background-color: #ecf0f1;
+            width: 80%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <h2>Login</h2>
+            <input type="text" id="userName" placeholder="Enter Your Name">
+            <input type="password" id="userPassword" placeholder="Enter your Password">
+            <div class="buttons">
+                <button id="loginBtn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="employeePage" style="display: none;">
+        <header>
+            <div class="logo">FSPro</div>
+            <h1>Employee Page</h1>
+            <div class="datetime" id="datetime">Time and Date</div>
+        </header>
+        <div class="container">
+            <aside>
+                <nav>
+                    <ul>
+                        <li><button id="checkInOutBtn"><i class="fas fa-user-check"></i> Check In/Out</button></li>
+                        <li><button id="progressReportBtn"> Daily Progress Report</button></li>
+                        <li><button id="requestHolidayBtn"><i class="fas fa-plane"></i> Request for Holiday</button></li>
+                        <li><button id="logoutBtnEmployee"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
+                    </ul>
+                </nav>
+            </aside>
+            <main>
+                <div class="employee-details" id="employee-details">
+                    <span id="employee-info">Employee Name | Employee ID</span>
+                    <div class="check-buttons" id="check-buttons">
+                        <button class="check-in" id="checkInBtn">Check In</button>
+                        <button class="check-out" id="checkOutBtn">Check Out</button>
+                    </div>
+                </div>
+                <table id="progress-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Day</th>
+                            <th>Arrived At</th>
+                            <th>Left the Office</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="current-date"></td>
+                            <td id="current-day"></td>
+                            <td id="check-in-time">-</td>
+                            <td id="check-out-time">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="progressReportSection" style="display:none;">
+                    <h2>Daily Progress Report</h2>
+                    <textarea id="progressReport" placeholder="Enter your progress report here"></textarea><br>
+                    <input type="file" id="fileUpload"><br>
+                    <button id="submitProgressBtn">Submit Progress Report</button>
+                </div>
+
+                <div id="holidayRequestSection" style="display:none;">
+                    <h2>Request for Holiday</h2>
+                    <textarea id="holidayReason" placeholder="Enter reason for holiday"></textarea><br>
+                    <button id="submitHolidayBtn">Submit Holiday Request</button>
+                    <div id="applicationStatus"></div>
+                    <div id="leaveCount"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <div id="adminPage" style="display: none;">
+        <nav class="navbar">
+            <div class="logo">FSPro</div>
+            <select id="adminSelect">
+            </select>
+        </nav>
+        <div class="container">
+            <div class="sidebar">
+                <ul>
+                    <li><button id="adminCheckInOutBtn">View Check In/Out</button></li>
+                    <li><button id="adminProgressBtn">View Progress Reports</button></li>
+                    <li><button id="adminHolidayBtn">View Holiday Applications</button></li>
+                    <li><button id="logoutBtnAdmin">Logout</button></li>
+                </ul>
+            </div>
+            <main class="content" id="adminFunctionality">
+                <div id="checkInOutSection" style="display:none;">
+                    <h2>Employee Check-In/Out Record</h2>
+                    <table id="AdminTable">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Employee ID</th>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Check-In Time</th>
+                                <th>Check-Out Time</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <h2>Missed Check-ins</h2>
+                    <table id="MissedCheckInsTable">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Employee ID</th>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="holidayApplicationsSection" style="display:none;">
+                    <h2>Holiday Applications</h2>
+                    <table id="AdminHolidayTable">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Reason</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div id="progressReportsSection" style="display:none;">
+                    <h2>Progress Reports</h2>
+                    <table id="AdminProgressTable">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Report/File</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <script>
+        const employees = [
+            { id: 118, name: "Hamza", phone: "923480970884" },
+            { id: 308, name: "Zain", phone: "923025186577" },
+            { id: 408, name: "Hanzallah", phone: "923474224118" }
+        ];
+        const admin = {
+            id: "admin",
+            password: "admin123"
+        };
+
+        document.getElementById("loginBtn").addEventListener("click", handleLogin);
+
+        function handleLogin() {
+            const userName = document.getElementById("userName").value.trim().toLowerCase();
+            const userPassword = document.getElementById("userPassword").value.trim();
+            const employee = employees.find(emp => emp.name.toLowerCase() === userName);
+
+            if (userName === admin.id && userPassword === admin.password) {
+                showPage("adminPage");
+                setupAdminPage();
+            } else if (employee) {
+                localStorage.setItem("empId", employee.id);
+                showPage("employeePage");
+                setupEmployeePage(employee);
+            } else {
+                alert("Invalid credentials. Please Try Again");
+            }
+        }
+
+        function showPage(pageId) {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("employeePage").style.display = "none";
+            document.getElementById("adminPage").style.display = "none";
+            document.getElementById(pageId).style.display = "block";
+        }
+
+        document.getElementById("logoutBtnEmployee").addEventListener("click", logout);
+        document.getElementById("logoutBtnAdmin").addEventListener("click", logout);
+
+        function setupEmployeePage(employee) {
+            setEmployeeDetails(employee);
+            displayDate();
+            displayDay();
+            setButtonEvents(employee);
+            document.getElementById('progressReportBtn').addEventListener("click", () => showSection('progressReportSection'));
+            document.getElementById('requestHolidayBtn').addEventListener("click", () => showSection('holidayRequestSection'));
+            document.getElementById('submitHolidayBtn').addEventListener("click", handleHolidayApplication);
+            document.getElementById('submitProgressBtn').addEventListener("click", () => submitEmployeeProgressReport(employee));
+            updateHolidayApplicationStatus();
+            updateProgressTable(employee);
+        }
+
+        function setEmployeeDetails(employee) {
+            const employeeInfo = document.getElementById("employee-info");
+            employeeInfo.innerHTML = `Employee Name: ${employee.name} | Employee ID: ${employee.id}`;
+        }
+
+        function displayDate() {
+            const dateDisplay = document.getElementById("current-date");
+            const now = new Date();
+            dateDisplay.textContent = now.toLocaleDateString();
+        }
+
+        function displayDay() {
+            const dayDisplay = document.getElementById("current-day");
+            const now = new Date();
+            dayDisplay.textContent = now.toLocaleDateString("en-US", { weekday: "long" });
+        }
+
+        function setButtonEvents(employee) {document.getElementById("checkInBtn").addEventListener("click", () => handleCheckIn(employee));
+            document.getElementById("checkOutBtn").addEventListener("click", () => handleCheckOut(employee));
+        }
+
+        function handleCheckIn(employee) {
+            const now = new Date();
+            const currentHour = now.getHours();
+            if (currentHour >= 10) {
+                alert("You can't check-in after 10 AM.");
+                return;
+            }
+            recordEmployeeAction(employee, "Arrived at");
+        }
+
+        function handleCheckOut(employee) {
+            recordEmployeeAction(employee, "Left the office");
+        }
+
+        function recordEmployeeAction(employee, action) {
+            const now = new Date();
+            const day = now.toLocaleDateString("en-US", { weekday: "long" });
+            const time = now.toLocaleTimeString();
+            const date = now.toLocaleDateString();
+            const data = { employeeId: employee.id, action, time, date, day };
+
+            let employeeData = JSON.parse(localStorage.getItem(employee.id)) || [];
+            employeeData.push(data);
+            localStorage.setItem(employee.id, JSON.stringify(employeeData));
+
+            updateProgressTable(employee);
+        }
+
+        function updateProgressTable(employee) {
+            const tableBody = document.querySelector("#progress-table tbody");
+            tableBody.innerHTML = "";
+
+            const employeeData = JSON.parse(localStorage.getItem(employee.id)) || [];
+
+            employeeData.forEach(record => {
+                const row = tableBody.insertRow();
+                const dateCell = row.insertCell();
+                const dayCell = row.insertCell();
+                const checkInCell = row.insertCell();
+                const checkOutCell = row.insertCell();
+
+                dateCell.textContent = record.date;
+                dayCell.textContent = record.day;
+                checkInCell.textContent = record.action === "Arrived at" ? record.time : "-";
+                checkOutCell.textContent = record.action === "Left the office" ? record.time : "-";
+            });
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('main > div');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function submitEmployeeProgressReport(employee) {
+            const report = document.getElementById("progressReport").value;
+            const fileInput = document.getElementById("fileUpload");
+            const file = fileInput.files[0];
+
+            if (!report.trim() && !file) {
+                alert("Please enter a progress report or upload a file.");
+                return;
+            }
+
+            const now = new Date().toLocaleString();
+            const progress = {
+                employeeId: employee.id,
+                report,
+                time: now,
+                fileName: file ? file.name : null,
+                date: new Date().toLocaleDateString()
+            };
+
+            let progressReports = JSON.parse(localStorage.getItem("progressReports")) || [];
+            progressReports.push(progress);
+            localStorage.setItem("progressReports", JSON.stringify(progressReports));
+
+            alert("Progress report submitted.");
+            document.getElementById("progressReport").value = "";
+            fileInput.value = "";
+        }
+
+        function handleHolidayApplication() {
+            const empId = localStorage.getItem("empId");
+            const reason = document.getElementById("holidayReason").value.trim();
+
+            if (!reason) {
+                alert("Please provide a reason for your holiday application.");
+                return;
+            }
+
+            const now = new Date().toLocaleString();
+            const application = {
+                employeeId: empId,
+                reason,
+                time: now,
+                status: "Pending",
+                date: new Date().toLocaleDateString()
+            };
+
+            let applications = JSON.parse(localStorage.getItem("holidayApplications")) || [];
+            applications.push(application);
+            localStorage.setItem("holidayApplications", JSON.stringify(applications));
+
+            alert("Holiday application submitted.");
+            document.getElementById("holidayReason").value = "";
+            updateHolidayApplicationStatus();
+        }
+
+        function updateHolidayApplicationStatus() {
+            const empId = localStorage.getItem("empId");
+            const holidayApplications = JSON.parse(localStorage.getItem("holidayApplications")) || [];
+            const application = holidayApplications.filter(app => app.employeeId === empId);
+
+            const statusDiv = document.getElementById("applicationStatus");
+            const leaveCountDiv = document.getElementById("leaveCount");
+
+            statusDiv.textContent = application.length > 0
+                ? `Status: ${application[application.length - 1].status || "Pending"}`
+                : "No Application Submitted";
+
+            leaveCountDiv.textContent = `Leaves Taken: ${application.length}`;
+        }
+
+        function setupAdminPage() {
+            populateEmployeeSelect();
+            document.getElementById('adminFunctionality').style.display = 'none';
+            document.getElementById('adminCheckInOutBtn').addEventListener("click", viewCheckInOutRecords);
+            document.getElementById("adminHolidayBtn").addEventListener("click", viewHolidayApplications);
+            document.getElementById("adminProgressBtn").addEventListener("click", viewProgressReports);
+
+            const adminSelect = document.getElementById("adminSelect");
+            adminSelect.addEventListener("change", () => {
+                const selectedId = adminSelect.value;
+                if (selectedId) {
+                    document.getElementById('adminFunctionality').style.display = 'block';
+                } else {
+                    document.getElementById('adminFunctionality').style.display = 'none';
+                }
+            });
+        }
+
+        function populateEmployeeSelect() {
+            const adminSelect = document.getElementById("adminSelect");
+            employees.forEach(emp => {
+                const option = document.createElement("option");
+                option.value = emp.id;
+                option.textContent = emp.name;
+                adminSelect.appendChild(option);
+            });
+        }
+
+        function viewCheckInOutRecords() {
+            showAdminSection('checkInOutSection');
+            const selectedId = document.getElementById("adminSelect").value;
+            const data = JSON.parse(localStorage.getItem(selectedId)) || [];
+            const adminTable = document.querySelector("#AdminTable tbody");
+            adminTable.innerHTML = "";
+
+            data.forEach(record => {
+                const row = adminTable.insertRow();
+                row.innerHTML = `
+                    <td><span class="math-inline">\{employees\.find\(emp \=\> emp\.id \=\= record\.employeeId\)\.name\}</td\>
+<td\></span>{record.employeeId}</td>
+                    <td><span class="math-inline">\{record\.date\}</td\>
+<td\></span>{record.day}</td>
+                    <td><span class="math-inline">\{record\.action \=\=\= "Arrived at" ? record\.time \: "\-"\}</td\>
+<td\></span>{record.action === "Left the office" ? record.time : "-"}</td>
+                `;
+            });
+
+            checkMissedCheckIn(selectedId);
+        }
+
+        function viewHolidayApplications() {
+            showAdminSection('holidayApplicationsSection');
+            const applications = JSON.parse(localStorage.getItem("holidayApplications")) || [];
+            const adminHolidayTable = document.querySelector("#AdminHolidayTable tbody");
+            adminHolidayTable.innerHTML = "";
+
+            applications.forEach(app => {
+                const row = adminHolidayTable.insertRow();
+                row.innerHTML = `
+                    <td><span class="math-inline">\{employees\.find\(emp \=\> emp\.id \=\= app\.employeeId\)\.name\}</td\>
+<td\></span>{app.reason}</td>
+                    <td><span class="math-inline">\{app\.date\}</td\>
+<td\></span>{app.status || "Pending"}</td>
+                    <td>
+                        <button onclick="updateApplicationStatus('<span class="math-inline">\{app\.employeeId\}', 'Approved'\)"\>Approve</button\>
+<button onclick\="updateApplicationStatus\('</span>{app.employeeId}', 'Denied')">Deny</button>
+                    </td>
+                `;
+            });
+        }
+
+        function viewProgressReports() {
+            showAdminSection('progressReportsSection');
+            const progressReports = JSON.parse(localStorage.getItem("progressReports")) || [];
+            const adminProgressTable = document.querySelector("#AdminProgressTable tbody");
+            adminProgressTable.innerHTML = "";
+
+            progressReports.forEach(report => {
+                const row = adminProgressTable.insertRow();
+                row.innerHTML = `
+                    <td><span class="math-inline">\{employees\.find\(emp \=\> emp\.id \=\= report\.employeeId\)\.name\}</td\>
+<td\></span>{report.report || report.fileName}</td>
+                    <td><span class="math-inline">\{report\.date\}</td\>
+<td\></span>{report.time}</td>
+                `;
+            });
+        }
+
+        function showAdminSection(sectionId) {
+            const sections = document.querySelectorAll('.content > div');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function checkMissedCheckIn(empId) {
+            const now = new Date();
+            const currentHour = now.getHours();
+            if (currentHour >= 10) {
+                const missedCheckIns = JSON.parse(localStorage.getItem(empId)) || [];
+                const missedCheckInRow = document.querySelector("#MissedCheckInsTable tbody");
+                missedCheckInRow.innerHTML = "";
+
+                if (missedCheckIns.length > 0) {
+                    missedCheckIns.forEach(record => {
+                        const employee = employees.find(emp => emp.id == record.employeeId);
+                        const row = missedCheckInRow.insertRow();
+                        row.innerHTML = `
+                            <td>${employee.name}</td>
+                            <td>${employee.id}</td>
+                            <td>${record.date}</td>
+                            <td>${record.day}</td>
+                            <td>
+                                <button onclick="sendWhatsAppMessage('${employee.phone}')">Send WhatsApp Notification</button>
+                            </td>
+                        `;
+                    });
+                }
+            }
+        }
+
+        function sendWhatsAppMessage(phone) {
+            const message = "Hello! This is a reminder that you missed your check-in today.";
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`;
+            console.log("WhatsApp URL:", url);
+            window.open(url, "_blank");
+        }
+
+        function updateApplicationStatus(empId, status) {
+            let applications = JSON.parse(localStorage.getItem("holidayApplications")) || [];
+            const appIndex = applications.findIndex(app => app.employeeId === empId);
+            if (appIndex > -1) {
+                applications[appIndex].status = status;
+                localStorage.setItem("holidayApplications", JSON.stringify(applications));
+                alert(`Application ${status.toLowerCase()}.`);
+                viewHolidayApplications();
+                updateHolidayApplicationStatus();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("empId");
+            showPage("loginPage");
+
+            const employeeInfo = document.getElementById("employee-info");
+            if (employeeInfo) {
+                employeeInfo.innerHTML = "Employee Name | Employee ID";
+            }
+
+            const progressTableBody = document.querySelector("#progress-table tbody");
+            if (progressTableBody) {
+                progressTableBody.innerHTML = `<tr>
+                <td id="current-date"></td>
+                <td id="current-day"></td>
+                <td id="check-in-time">-</td>
+                <td id="check-out-time">-</td>
+            </tr>`;
+            }
+            if (document.getElementById('progressReport')) {
+                document.getElementById('progressReport').value = '';
+            }
+            if (document.getElementById('holidayReason')) {
+                document.getElementById('holidayReason').value = '';
+            }
+
+            const adminTable = document.querySelector("#AdminTable tbody");
+            if (adminTable) {
+                adminTable.innerHTML = "";
+            }
+            const missedCheckInRow = document.querySelector("#MissedCheckInsTable tbody");
+            if (missedCheckInRow) {
+                missedCheckInRow.innerHTML = "";
+            }
+            const adminHolidayTable = document.querySelector("#AdminHolidayTable tbody");
+            if (adminHolidayTable) {
+                adminHolidayTable.innerHTML = "";
+            }
+            const adminProgressTable = document.querySelector("#AdminProgressTable tbody");
+            if (adminProgressTable) {
+                adminProgressTable.innerHTML = "";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
